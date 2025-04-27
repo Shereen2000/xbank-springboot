@@ -1,38 +1,46 @@
 package com.tumiso.xbank.entities;
-import com.tumiso.xbank.entities.enums.AccountStatus;
+
+import com.tumiso.xbank.entities.enums.status.BankAccountStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.Instant;
 
-@Data
 @Entity
+@Table(name = "bank_accounts")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="accounts")
+@Getter
+@Builder
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long accountId;
 
-    private String clientName;
+    private Long AccountNumber;
 
-    private String clientSurname;
+    private Integer clientId;
 
-    @Column(unique=true)
-    private String email;
+    private Integer accountTypeId;
 
-    @Column(unique = true)
-    private String accountNumber;
+    private BigDecimal balance = BigDecimal.valueOf(0.00);
 
-    private String pinCode;
+    @Enumerated(EnumType.STRING)
+    private BankAccountStatus Status = BankAccountStatus.CREATED;
 
-    private LocalDateTime createdTimeStamp;
+    private Instant createdAt = Instant.now();
 
-    private Double balance;
+    private Instant updatedAt = Instant.now();
 
-    private AccountStatus status;
+
+    public void updateBalance(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+        this.updatedAt = Instant.now();
+    }
+
 }
